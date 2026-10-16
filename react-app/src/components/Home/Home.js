@@ -15,7 +15,7 @@ const Home = () => {
         setImgIndex((el) => {
 
             if (el - 1 < 1) {
-                return 4;
+                return 3;
             } else {
                 return el - 1;
             }
@@ -31,7 +31,7 @@ const Home = () => {
 
         setImgIndex((el) => {
 
-            if (el + 1 > 4) {
+            if (el + 1 > 3) {
                 return 1;
             } else {
                 return el + 1;
@@ -49,7 +49,7 @@ const Home = () => {
         const interval = setInterval(() => {
 
             setImgIndex((e) => {
-                if (e + 1 > 4) {
+                if (e + 1 > 3) {
                     return 1;
                 } else {
                     return e + 1;
@@ -88,9 +88,6 @@ const Home = () => {
                 </li>
                 <li className={imgInde === 3 ? 'slide data-active' : "slide"}>
                     <img src='https://rainforest-dev.s3.us-west-1.amazonaws.com/home_page_banner_4.jpg' alt='img4'></img>
-                </li>
-                <li className={imgInde === 4 ? 'slide data-active' : "slide"}>
-                    <img src='https://nozama-fsp.herokuapp.com/assets/carousel1-78ebb6cfa296d65ccfe8e31b97159285f25052421c16c2b02ae78f347f9af3fd.jpg' alt='img4'></img>
                 </li>
 
             </ul>

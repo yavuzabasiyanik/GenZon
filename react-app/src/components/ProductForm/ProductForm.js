@@ -14,7 +14,7 @@ const ProductForm = () => {
     const [category, setCategory] = useState('');
     const [errors, setErrors] = useState([]);
 
-    const [image, setImg] = useState(null);
+    const [imageUrl, setImageUrl] = useState('');
     const [imageLoading, setImageLoading] = useState(false);
     const dispatch = useDispatch();
 
@@ -51,7 +51,7 @@ const ProductForm = () => {
         }
 
 
-        formData.append("image", image);
+        formData.append("image_url", imageUrl);
         formData.append("name", name);
         formData.append("description", description);
         formData.append("price", price);
@@ -145,12 +145,13 @@ const ProductForm = () => {
                         {/* </div> */}
                         <div className="product-form-create image-thingiyhahaha">
 
-                            <label>Product Image</label>
+                            <label>Product Image Link</label>
                             <input
-                                type='file'
-                                accept="image/*"
+                                type='url'
                                 required
-                                onChange={(e) => setImg(e.target.files[0])}
+                                placeholder='https://example.com/photo.jpg'
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
                                 className='inputss'
                             />
                         </div>

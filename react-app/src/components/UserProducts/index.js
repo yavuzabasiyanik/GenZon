@@ -93,7 +93,7 @@ const UserProducts = () => {
                     </div>
 
                 </div>
-                <img alt='something' className='legendimg' src='https://images.contentstack.io/v3/assets/blt187521ff0727be24/blt3d038a51072c6d5a/614cc18164c8007a9bdec0e2/zaun_splash.jpeg'></img>
+                <img alt='something' className='legendimg' src='https://external-preview.redd.it/GLem0FFrjGGfKF8ruVScaYqNmB0CbKde8gFD82Ov-cw.jpg?auto=webp&s=c925bc146f8b8b0bad10909fe40470b96eaa4c7b'></img>
             </div>
             <Footer something={true}></Footer>
         </div>

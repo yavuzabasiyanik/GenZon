@@ -4,6 +4,7 @@ import { NavLink, useHistory } from 'react-router-dom';
 // import LogoutButton from '../auth/LogoutButton';
 import './Navbar.css';
 import { logout } from '../../store/session';
+import cartIcon from '../../images/cart-icon.svg';
 // import mypic from '../../images/GenZon-logos_black.png';
 // import ProductForm from '../ProductForm/ProductForm';
 
@@ -227,7 +228,7 @@ const NavBar = () => {
 
             <NavLink exact to={`/user/cart`}><div className='shopping-cart-thingy'>
 
-              <img alt='hastaherkes' src='https://mamazon-fullstack.herokuapp.com/assets/carticon-ee0703ee25282cbd05ba97a0f91e022474e35953f119892b5351b2c3d72daf94.png'></img>
+              <img alt='Cart' src={cartIcon}></img>
               <p className='numbershoppingcart'>{user ? cartLength : 0}</p>
               <p className='cartnaming'>Cart</p>
             </div></NavLink>
@@ -275,8 +276,8 @@ const NavBar = () => {
               </div>
             </NavLink>
             <div className='rightpartlinkedingithub'>
-              {/* <a rel="noreferrer" href="https://github.com/yavuzabasiyanik" target="_blank"><i className="githublinked fa-brands fa-github"></i></a> */}
-              <a rel="noreferrer" href="https://www.linkedin.com/in/ahmed-abasiyanik/" target="_blank"><i className="githublinked fa-brands fa-linkedin"></i></a>
+              <a rel="noreferrer" href="https://github.com/yavuzabasiyanik" target="_blank"><i className="githublinked fa-brands fa-github"></i></a>
+              <a rel="noreferrer" href="https://www.linkedin.com/in/yavuzabasiyanik/" target="_blank"><i className="githublinked fa-brands fa-linkedin"></i></a>
             </div>
           </div>
         </div>

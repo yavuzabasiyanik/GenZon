@@ -8,6 +8,7 @@ import boto3
 import botocore
 import os
 import uuid
+from urllib.parse import urlparse
 
 BUCKET_NAME = os.environ.get("S3_BUCKET")
 S3_LOCATION = f"https://{BUCKET_NAME}.s3.amazonaws.com/"
@@ -75,11 +76,9 @@ def getAllProducts():
 @login_required
 def createProduct():
 
-    if "image" not in request.files:
-        return {"errors": "image required"}, 400
-
-
-    image = request.files["image"]
+    # Either an uploaded file (needs S3 configured) or a link to an image
+    image = request.files.get("image")
+    image_url = request.values.get("image_url", "").strip()
 
     name = request.values["name"]
     description = request.values["description"]
@@ -88,8 +87,16 @@ def createProduct():
     category = request.values["category"]
 
     errors = []
-    if not allowed_file(image.filename):
-        errors.append("image : File type not permitted")
+    if image:
+        if not BUCKET_NAME:
+            errors.append("image : Image uploads are not enabled, please use an image link")
+        elif not allowed_file(image.filename):
+            errors.append("image : File type not permitted")
+    elif not image_url:
+        errors.append("image : Image required")
+    elif not (urlparse(image_url).scheme in ("http", "https")
+              and urlparse(image_url).path.lower().endswith(tuple(f".{ext}" for ext in ALLOWED_EXTENSIONS))):
+        errors.append("image : Image link must end in .png, .jpg, .jpeg or .gif")
     if not 4 <= len(name) <= 80:
         errors.append("name : Name must be between 4-80")
     if not 4 <= len(description) <= 1001:
@@ -110,21 +117,20 @@ def createProduct():
         return {"errors": errors}, 400
 
 
-    image.filename = get_unique_filename(image.filename)
+    if image:
+        image.filename = get_unique_filename(image.filename)
 
-    upload = upload_file_to_s3(image)
+        upload = upload_file_to_s3(image)
 
-    if "url" not in upload:
-        # if the dictionary doesn't have a url key
-        # it means that there was an error when we tried to upload
-        # so we send back that error message
-        return upload, 400
+        if "url" not in upload:
+            # if the dictionary doesn't have a url key
+            # it means that there was an error when we tried to upload
+            # so we send back that error message
+            return {"errors": ["image : Upload failed, please try again"]}, 400
 
-    url = upload["url"]
-
-
-
-    # upload_file_to_s3, allowed_file, get_unique_filename
+        url = upload["url"]
+    else:
+        url = image_url
 
     product = Product(
         user_id = current_user.id,
