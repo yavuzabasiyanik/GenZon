@@ -21,14 +21,16 @@ def error_thingy(validation_errors):
 
 
 @shoppingcart_routes.route('/', methods=['GET'])
+@login_required
 def getshoppingcart():
 
-    allShoppingcart = ShoppingCart.query.all()
+    allShoppingcart = ShoppingCart.query.filter(ShoppingCart.user_id == current_user.id).all()
 
     return {'allCartProduct': [cart.to_dict() for cart in allShoppingcart]}
 
 
 @shoppingcart_routes.route('/', methods=['POST'])
+@login_required
 def createShoppingCart():
 
     form = ShoppingCartForm()
@@ -58,9 +60,12 @@ def createShoppingCart():
 
 
 @shoppingcart_routes.route('/delete/<shoppingcart_id>/', methods=['DELETE'])
+@login_required
 def deleteShoppingCart(shoppingcart_id):
 
-    shoppingcart = ShoppingCart.query.get(shoppingcart_id)
+    shoppingcart = ShoppingCart.query.get_or_404(shoppingcart_id)
+    if shoppingcart.user_id != current_user.id:
+        return {'errors': ['Forbidden']}, 403
 
     db.session.delete(shoppingcart)
     db.session.commit()
@@ -68,9 +73,10 @@ def deleteShoppingCart(shoppingcart_id):
 
 
 @shoppingcart_routes.route('/deleteall/', methods=['DELETE'])
+@login_required
 def deleteShoppingCartAll():
 
-    shoppingcart = ShoppingCart.query.all()
+    shoppingcart = ShoppingCart.query.filter(ShoppingCart.user_id == current_user.id).all()
 
     array = []
 
@@ -86,7 +92,12 @@ def deleteShoppingCartAll():
 
 
 @shoppingcart_routes.route('/update/<shoppingcart_id>', methods=['PUT'])
+@login_required
 def updateShoppingCart(shoppingcart_id):
+
+    shoppingcartProduct = ShoppingCart.query.get_or_404(shoppingcart_id)
+    if shoppingcartProduct.user_id != current_user.id:
+        return {'errors': ['Forbidden']}, 403
 
 
     form = ShoppingCartForm()
@@ -94,10 +105,6 @@ def updateShoppingCart(shoppingcart_id):
     form['csrf_token'].data = request.cookies['csrf_token']
 
     if form.validate_on_submit():
-
-
-        shoppingcartProduct = ShoppingCart.query.get(shoppingcart_id)
-
 
         shoppingcartProduct.quantity = form.data['quantity']
 

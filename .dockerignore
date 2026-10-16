@@ -4,3 +4,6 @@ Pipfile
 Pipfile.lock
 .env
 .DS_Store
+react-app/build
+.git
+.github

@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired, Email, ValidationError, URL
 from app.models import User
+from urllib.parse import urlparse
 
 
 # def user_exists(form, field):
@@ -29,9 +30,9 @@ def password_match(form, field):
 
 
 def img_check(form ,field):
-    url = field.data
+    path = urlparse(field.data).path.lower()
 
-    if not (url[-3:] in 'png jpg jpeg gif' ):
+    if not path.endswith(('.png', '.jpg', '.jpeg', '.gif')):
         raise ValidationError('Images Only!')
 
 def usernamepls(form,field):

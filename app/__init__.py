@@ -28,6 +28,11 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+@login.unauthorized_handler
+def unauthorized():
+    return {'errors': ['Unauthorized']}, 401
+
+
 # Tell flask about our seed commands
 app.cli.add_command(seed_commands)
 

@@ -58,10 +58,10 @@ export const orderCreate = (payload) => async (dispatch) => {
         }
 
         dispatch(createOrder(data))
-
+        return data
     }
 
-
+    return null
 }
 
 export const deleteOrderThunk = (id) => async (dispatch) => {

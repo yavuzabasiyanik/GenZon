@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: genzon
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      # Neon connection string, pasted in when the Blueprint is created
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      # Only needed for "Sell an item" image uploads
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_KEY
+        sync: false
+      - key: S3_SECRET
+        sync: false

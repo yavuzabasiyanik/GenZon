@@ -2,12 +2,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField , IntegerField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, ValidationError, Length, URL
 from app.models import User
+from urllib.parse import urlparse
 
 
 def img_check(form ,field):
-    url = field.data
+    path = urlparse(field.data).path.lower()
 
-    if not ('png' in url or 'pd' in url or 'jpg' in url or 'jpeg' in url or 'gif' in url):
+    if not path.endswith(('.png', '.jpg', '.jpeg', '.gif')):
         raise ValidationError('Images Only!')
 
 def price_check(form,field):

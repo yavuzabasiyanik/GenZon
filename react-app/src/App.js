@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LoginForm from './components/auth/Login/LoginForm';
 import SignUpForm from './components/auth/Signup/SignUpForm';
 import NavBar from './components/Navbar/NavBar';
@@ -24,6 +24,7 @@ import { orderLoad } from './store/order';
 function App() {
   const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
+  const userId = useSelector(state => state.session.user?.id);
 
 
   useEffect(() => {
@@ -34,11 +35,16 @@ function App() {
     })();
 
     dispatch(productLoad());
-    dispatch(shoppingcartLoad());
     dispatch(getAllReviews());
-    dispatch(orderLoad());
 
   }, [dispatch]);
+
+  // Cart and orders are per-user, so (re)load them whenever someone logs in
+  useEffect(() => {
+    if (!userId) return;
+    dispatch(shoppingcartLoad());
+    dispatch(orderLoad());
+  }, [dispatch, userId]);
 
   if (!loaded) {
     return null;

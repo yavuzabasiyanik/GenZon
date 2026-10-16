@@ -61,14 +61,14 @@ const ProductForm = () => {
 
         setImageLoading(true);
 
-        await dispatch(createProduct(formData));
-
-        // if (data) {
-        //     setErrors(data);
-        //     return
-        // }
+        const data = await dispatch(createProduct(formData));
 
         setImageLoading(false);
+
+        if (data) {
+            setErrors(Array.isArray(data) ? data : [data]);
+            return
+        }
 
         history.push('/user/products')
     }

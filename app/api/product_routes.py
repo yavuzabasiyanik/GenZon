@@ -11,7 +11,7 @@ import uuid
 
 BUCKET_NAME = os.environ.get("S3_BUCKET")
 S3_LOCATION = f"https://{BUCKET_NAME}.s3.amazonaws.com/"
-ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 s3 = boto3.client(
    "s3",
@@ -72,6 +72,7 @@ def getAllProducts():
 
 
 @product_routes.route('/', methods=['POST'])
+@login_required
 def createProduct():
 
     if "image" not in request.files:
@@ -86,8 +87,27 @@ def createProduct():
     price = request.values["price"]
     category = request.values["category"]
 
+    errors = []
     if not allowed_file(image.filename):
-        return {"errors": error_thingy("file type not permitted")}, 400
+        errors.append("image : File type not permitted")
+    if not 4 <= len(name) <= 80:
+        errors.append("name : Name must be between 4-80")
+    if not 4 <= len(description) <= 1001:
+        errors.append("description : Description must be between 4-1001")
+    if not category:
+        errors.append("category : Please choose a category")
+    try:
+        if not 1 <= int(price) <= 10000:
+            errors.append("price : Price must be between 1-10000")
+    except ValueError:
+        errors.append("price : Price must be a number")
+    try:
+        if not 1 <= int(quantity) <= 10:
+            errors.append("quantity : Quantity must be between 1-10")
+    except ValueError:
+        errors.append("quantity : Quantity must be a number")
+    if errors:
+        return {"errors": errors}, 400
 
 
     image.filename = get_unique_filename(image.filename)
@@ -121,9 +141,12 @@ def createProduct():
 
 
 @product_routes.route('/delete/<product_id>', methods=['DELETE'])
+@login_required
 def deleteProduct(product_id):
 
-    product = Product.query.get(product_id)
+    product = Product.query.get_or_404(product_id)
+    if product.user_id != current_user.id:
+        return {'errors': ['Forbidden']}, 403
 
     db.session.delete(product)
     db.session.commit()
@@ -131,15 +154,18 @@ def deleteProduct(product_id):
 
 
 @product_routes.route('/update/<product_id>', methods=['PUT'])
+@login_required
 def updateProduct(product_id):
+
+    product = Product.query.get_or_404(product_id)
+    if product.user_id != current_user.id:
+        return {'errors': ['Forbidden']}, 403
 
     form = ProductForm()
 
     form['csrf_token'].data = request.cookies['csrf_token']
 
     if form.validate_on_submit():
-
-        product = Product.query.get(product_id)
 
         product.name = form.data['name']
         product.description = form.data['description']

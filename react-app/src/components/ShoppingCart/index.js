@@ -105,12 +105,8 @@ const ShoppingCart = () => {
         dispatch(shoppingcartdeleteall());
     }
 
-    const handleCheckout = (e) => {
+    const handleCheckout = async (e) => {
         e.preventDefault();
-
-
-
-        dispatch(shoppingcartdeleteall());
 
         let paylaod = {
             totalCost: subtotal,
@@ -118,7 +114,12 @@ const ShoppingCart = () => {
             products: [...shoppingcart]
         }
 
-        dispatch(orderCreate(paylaod));
+        const order = await dispatch(orderCreate(paylaod));
+
+        // Only empty the cart once the order has actually been saved
+        if (!order || Array.isArray(order)) return;
+
+        await dispatch(shoppingcartdeleteall());
 
         history.push({pathname: '/orders', state: {boughtsomething:true}})
 
@@ -161,7 +162,7 @@ const ShoppingCart = () => {
                         <div className='ikincicheckout'>
                             <p style={{ fontSize: "18px", marginTop: "10px" }} >
 
-                                Subtotal ({items} {items.length === 1 ? "item" : "items"}): <span style={{ fontSize: "18px", fontWeight: "700" }}>${subtotal}.00</span>
+                                Subtotal ({items} {items === 1 ? "item" : "items"}): <span style={{ fontSize: "18px", fontWeight: "700" }}>${subtotal}.00</span>
                             </p>
                             <button onClick={handleCheckout} className='proceedtocheckout'>Place your order</button>
                         </div>

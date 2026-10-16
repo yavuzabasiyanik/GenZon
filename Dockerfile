@@ -1,33 +1,27 @@
-# Start with the python:3.9 image
+# --- Stage 1: build the React frontend
+# react-scripts 4 needs Node 16 (newer Node breaks its webpack 4 build)
+FROM node:16-bullseye AS frontend
+WORKDIR /react-app
+COPY react-app/package.json react-app/package-lock.json ./
+RUN npm install --no-audit --no-fund
+COPY react-app/ ./
+RUN npm run build
+
+# --- Stage 2: Flask backend that serves the API and the built frontend
 FROM python:3.9
-# Set the following enviroment variables
-#
-# REACT_APP_BASE_URL -> Your deployment URL
-# FLASK_APP -> entry point to your flask app
-# FLASK_ENV -> Tell flask to use the production server
-# SQLALCHEMY_ECHO -> Just set it to true
-ENV REACT_APP_BASE_URL=https://memestagram-group-project.herokuapp.com/
+
 ENV FLASK_APP=app
 ENV FLASK_ENV=production
-ENV SQLALCHEMY_ECHO=true
+ENV SQLALCHEMY_ECHO=false
 
-# Set the directory for upcoming commands to /var/www
 WORKDIR /var/www
 
-# Copy all the files from your repo to the working directory
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt psycopg2==2.9.10
+
 COPY . .
+COPY --from=frontend /react-app/build/ app/static/
 
-# Copy the built react app (it's built for us) from the
-# /react-app/build/ directory into your flasks app/static directory
-COPY /react-app/build/* app/static/
-
-# Run the next two python install commands with PIP
-# install -r requirements.txt
-# install psycopg2
-RUN pip install -r requirements.txt
-RUN pip install psycopg2
-
-# Start the flask environment by setting our
-# closing command to gunicorn app:app
-CMD gunicorn app:app
-
+# Render (and most hosts) tell the app which port to listen on via $PORT.
+# Migrate, seed an empty database, then start the server.
+CMD flask db upgrade && flask seed if-empty && gunicorn app:app --bind 0.0.0.0:${PORT:-8000}

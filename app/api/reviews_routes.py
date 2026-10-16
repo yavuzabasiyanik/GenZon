@@ -25,6 +25,7 @@ def getAllReviews():
 
 
 @reviews_routes.route('/', methods=["POST"])
+@login_required
 def postReview():
 
     form = ReviewForm()
@@ -47,9 +48,12 @@ def postReview():
 
 
 @reviews_routes.route('/delete/<review_id>', methods=['DELETE'])
+@login_required
 def deleteReview(review_id):
 
-    review = Reviews.query.get(review_id)
+    review = Reviews.query.get_or_404(review_id)
+    if review.user_id != current_user.id:
+        return {'errors': ['Forbidden']}, 403
 
     db.session.delete(review)
     db.session.commit()
@@ -58,15 +62,18 @@ def deleteReview(review_id):
 
 
 @reviews_routes.route('/update/<review_id>', methods=['PUT'])
+@login_required
 def reviewUpdate(review_id):
+
+    review = Reviews.query.get_or_404(review_id)
+    if review.user_id != current_user.id:
+        return {'errors': ['Forbidden']}, 403
 
     form = ReviewForm()
 
     form['csrf_token'].data = request.cookies['csrf_token']
 
     if form.validate_on_submit():
-
-        review = Reviews.query.get(review_id)
 
         review.title = form.data['title']
         review.body = form.data['body']
