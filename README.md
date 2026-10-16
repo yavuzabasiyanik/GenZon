@@ -1,5 +1,9 @@
 # GenZon
 
+**Live demo:** https://genzon.onrender.com (demo login: `sifuhotman` / `123321`)
+
+> Hosted on a free tier, so the first load after a period of inactivity can take up to a minute.
+
 GenZon is a full stack eCommerce app that allows users to sell and buy products they like. In GenZon you can find any kind of items, either by searching the item's name in the search bar or by scrolling through the specific category page that you think your item belongs to. Currently, GenZon has 5 catergories, Electronics, Fashion, Furniture, Food and Hobby. 
 
 ## Application Architecture
@@ -32,7 +36,7 @@ The ability to play with the data so easly made Flask very efficent for me to us
 
 #### PostgreSQL
 
-PostgreSQL was the database of choice because it is simple to work with, and is easily manipulable using Sequelize.
+PostgreSQL was the database of choice because it is simple to work with, and works great with SQLAlchemy.
 
 #### WTForms
 
