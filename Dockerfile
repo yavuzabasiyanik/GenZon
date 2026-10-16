@@ -20,7 +20,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt psycopg2==2.9.10
 
 COPY . .
-COPY --from=frontend /react-app/build/ app/static/
+# The wildcard flattens build/static/{js,css,media} into app/static/ so the
+# files line up with Flask's /static/ URL (build/ alone would nest them)
+COPY --from=frontend /react-app/build/* app/static/
 
 # Render (and most hosts) tell the app which port to listen on via $PORT.
 # Migrate, seed an empty database, then start the server.
