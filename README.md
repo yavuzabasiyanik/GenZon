@@ -1,117 +1,81 @@
 # GenZon
 
-**Live demo:** https://genzon.onrender.com (demo login: `sifuhotman` / `123321`)
+A full-stack e-commerce marketplace, modeled on Amazon, where users can list products for sale, shop by category, manage a cart, check out, and review what they bought.
 
-> Hosted on a free tier, so the first load after a period of inactivity can take up to a minute.
+**Live demo:** https://genzon.onrender.com. Click **Demo User** on the sign-in page to log in instantly.
 
-GenZon is a full stack eCommerce app that allows users to sell and buy products they like. In GenZon you can find any kind of items, either by searching the item's name in the search bar or by scrolling through the specific category page that you think your item belongs to. Currently, GenZon has 5 catergories, Electronics, Fashion, Furniture, Food and Hobby. 
+![GenZon home page](docs/screenshots/home.png)
 
-## Application Architecture
+## Features
 
-Genzon is built on a React frontend with a Flask backend, using PostgreSQL as a database. 
+- **Accounts:** sign up, log in, or try the app as the demo user
+- **Browse and search:** live search bar, 5 categories, and sorting by price, rating, or date
+- **Sell:** list a product with a name, price, stock, category, and image; edit or remove your listings
+- **Cart:** add items, change quantities (limited to available stock), or clear the cart
+- **Checkout and orders:** place orders, add delivery instructions, cancel or return, and buy again
+- **Reviews:** 1–5 star ratings with written reviews that you can edit or delete
 
-## Frontend Overview
+## Tech stack
 
-GenZon does the majority of its applcation logic and validations on the backend, but display/interaction logic on the frontend is managed using several technologies.
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Redux (thunks), React Router, CSS |
+| Backend | Python, Flask, SQLAlchemy, Alembic migrations, WTForms, Flask-Login |
+| Database | PostgreSQL (hosted on Neon) |
+| Deployment | Docker (multi-stage build), Render, Blueprint infrastructure-as-code |
 
-### Frontend Technologies Used
+## Engineering highlights
 
-#### React 
+GenZon was first built in 2022 and revisited in 2026 to harden it for a public deployment:
 
-GenZon is a React application. All display logic is handled by the React libraries.
+- **Server-side authorization:** every write endpoint requires a login and checks ownership, so users can only change their own products, reviews, orders, and cart. Cart and order data are scoped to the signed-in user.
+- **Prices you can't tamper with:** order totals are calculated on the server from database prices, never taken from the client.
+- **Validation on the server:** price, quantity, stock, rating, and image checks run on the backend, not just in the browser, and errors come back as clean JSON (401/403/404) instead of server crashes.
+- **Reproducible deploys:** a multi-stage Dockerfile builds the React app and the Flask API into one image. On startup it runs database migrations and seeds an empty database, so a fresh deploy comes up with demo data and no manual steps.
+- **Verified end to end:** tested in a headless browser against the live site (login, cart, checkout, orders, sorting).
 
-#### Redux 
+## Screenshots
 
-All state management in GenZon is handled with Redux, with thunks making API calls to the backend server to handle the data.
+### Shopping cart
+Change quantities, remove items, and check out.
 
-## Backend Overview
+![Shopping cart](docs/screenshots/cart.png)
 
-GenZon uses a Flask server with a Postgresql database.
+### Orders
+Review past orders, update delivery instructions, cancel or return, or buy again.
 
-### Backend Technologies Used
+![Orders page](docs/screenshots/orders.png)
 
-#### Flask
+## Running locally
 
-The ability to play with the data so easly made Flask very efficent for me to use creating GenZon. 
-
-#### PostgreSQL
-
-PostgreSQL was the database of choice because it is simple to work with, and works great with SQLAlchemy.
-
-#### WTForms
-
-WTForms made it very easy for me to implemetn validators into my app. 
-
-#### SQLAlchemy
-
-SQLAlchemy was the ORM of choice for GenZon. It made data seeding so easy.
-
-
-## Important Screenshots
-
-### Shopping Cart
-  In this page you can see the items you have added into your shopping cart. You can see the amount of the items you are buying you can increase and decrease the amount from within the shopping cart. You may choose to remove one item or you may choose to remove all the items at once from your shopping cart. If you want to proceed with the purchase you may click the yellow button on the right to checkout. 
-  
-![image](https://user-images.githubusercontent.com/61038486/165029910-3fd5ca81-72af-4a13-a3f5-d761d76bd3e8.png)
-
-### Home Page 
-
-![image](https://user-images.githubusercontent.com/61038486/165030250-657fc73c-850b-4ce9-8892-35137ddf02e0.png)
-
-
-### Your Products Page
-  This is the page where you can manage all your items. You may update or delete the item you created from within this page.
-
-![image](https://user-images.githubusercontent.com/61038486/165030311-7169a8b1-3150-4e35-acf5-f0fa8d2b9675.png)
-
-
-## Conclusion and Next Steps
-
-I'm satisfied with the funcinality of my website. However, I'm still not satisfied with my overall design. My forms are not very good looking right now, so I would like to take my time to work on the css of the site. Also, I would like to finish the orders feature soon. 
-
-
-
-## Getting started
-
-1. Clone this repo
-  * git clone https://github.com/yavuzabasiyanik/GenZon.git
-
-2. Install dependencies
+1. Clone the repo:
    ```bash
-      pipenv install --dev -r dev-requirements.txt && pipenv install -r requirements.txt
-      ```
-
-3. Create a POSTGRESQL user with CREATEDB and PASSWORD in PSQL.
-  * CREATE USER <'genzon_dev'> WITH CREATEDB PASSWORD <'password'>
-
-4. Create a .env file in the backend directory based on the .env.example
-
-5. Enter your username and password information into your .env file along with your desired database name, a
-   secured combination of characters for your JWT_Secret, and your PORT(generally 5000)
-
-6. Add the following proxy to your package.json file within your frontend directory, replacing or
-   keeping the 5000 port to match your PORT configuration found in your .env file.
-  * "proxy": "http://localhost:5000"
-
-7. Create database, migrate, and seed models:
-  ```bash
+   git clone https://github.com/yavuzabasiyanik/GenZon.git
+   cd GenZon
+   ```
+2. Install the backend dependencies:
+   ```bash
+   pipenv install --dev -r dev-requirements.txt && pipenv install -r requirements.txt
+   ```
+3. Create a PostgreSQL user and database, then copy `.env.example` to `.env` and fill in `DATABASE_URL` and `SECRET_KEY`.
+4. Migrate and seed the database, then start the API on port 5000:
+   ```bash
    pipenv shell
-   ```
-
-   ```bash
    flask db upgrade
-   ```
-
-   ```bash
    flask seed all
+   flask run
+   ```
+5. In a second terminal, start the frontend. It proxies API calls to port 5000 and opens http://localhost:3000:
+   ```bash
+   cd react-app
+   npm install
+   npm start
    ```
 
-8. Start backend server
-  * flask run
+Or run the production build with Docker:
+```bash
+docker build -t genzon .
+docker run -p 8000:8000 -e DATABASE_URL=<your postgres url> -e SECRET_KEY=<any secret> genzon
+```
 
-9. Start frontend services, which should open the app in your default browser, if not navigate to http://localhost:3000/
-  * npm start
-
-10. A demo user button is available to use or you may create a new user account by clicking on "Sign up".
-
-
+> The live demo runs on a free tier and stays warm with an uptime monitor. If it was idle, the first load can take up to a minute.
