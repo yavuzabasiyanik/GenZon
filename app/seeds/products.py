@@ -80,6 +80,27 @@ def seed_products():
     db.session.commit()
 
 
+# Products featured on the homepage. Added by name if missing, so existing
+# databases pick them up on the next deploy without re-seeding everything.
+FEATURED_PRODUCTS = [
+    dict(user_id=2, name='Echo Dot Smart speaker with clock and Alexa',
+         description='Meet Echo Dot with clock: our most popular smart speaker with an LED display that shows the time, outdoor temperature, and timers. Ask Alexa to play music, answer questions, set alarms, and control compatible smart home devices.',
+         image_url='https://m.media-amazon.com/images/I/51MzOVciT3L._AC_UY218_.jpg',
+         price=60, category='electronics', quantity=10),
+    dict(user_id=2, name='League of Legends Gift Card',
+         description='Redeem for Riot Points in League of Legends. Unlock champions, skins, and more. Digital code delivered after purchase.',
+         image_url='https://m.media-amazon.com/images/I/71iUrQk82KL._SY500_.jpg',
+         price=100, category='toys', quantity=10),
+]
+
+
+def seed_featured_products():
+    for data in FEATURED_PRODUCTS:
+        if not Product.query.filter_by(name=data['name']).first():
+            db.session.add(Product(**data))
+    db.session.commit()
+
+
 def undo_products():
     db.session.execute('TRUNCATE products RESTART IDENTITY CASCADE;')
     db.session.commit()

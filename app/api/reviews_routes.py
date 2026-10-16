@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, session, request
-from app.models import Reviews, db
+from app.models import Reviews, Product, db
 from app.forms import ReviewForm
 from flask_login import current_user, login_user, logout_user, login_required
 
@@ -30,9 +30,15 @@ def postReview():
 
     form = ReviewForm()
 
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
+        product = Product.query.get(form.data['product_id'])
+        if not product:
+            return {'errors': ['product_id : Product not found']}, 404
+        if product.user_id == current_user.id:
+            return {'errors': ['product_id : You cannot review your own product']}, 400
+
         review = Reviews(
             user_id = current_user.id,
             product_id = form.data['product_id'],
@@ -71,7 +77,7 @@ def reviewUpdate(review_id):
 
     form = ReviewForm()
 
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
 

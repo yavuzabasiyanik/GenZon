@@ -278,6 +278,7 @@ const NavBar = () => {
             <div className='rightpartlinkedingithub'>
               <a rel="noreferrer" href="https://github.com/yavuzabasiyanik" target="_blank"><i className="githublinked fa-brands fa-github"></i></a>
               <a rel="noreferrer" href="https://www.linkedin.com/in/yavuzabasiyanik/" target="_blank"><i className="githublinked fa-brands fa-linkedin"></i></a>
+              {/* <a rel="noreferrer" href="https://www.linkedin.com/in/ahmed-abasiyanik/" target="_blank"><i className="githublinked fa-brands fa-linkedin"></i></a> */}
             </div>
           </div>
         </div>

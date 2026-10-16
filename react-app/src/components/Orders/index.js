@@ -33,7 +33,7 @@ const Orders = () => {
 
     const months = [
         "January",
-        "Febraury",
+        "February",
         "March",
         "April",
         "May",
@@ -186,7 +186,7 @@ const Orders = () => {
                         orderDivs.length ?
                             <>
                                 <h1 className='yourorders'>Your Orders</h1>
-                                <p className='imgoingtothegym'> <span style={{ fontWeight: "bold", fontSize: "14px", color: "black" }}>{orders.length} {orders.length > 1 ? 'orders' : 'order'}</span> placed in <span style={{ fontWeight: "bold", fontSize: "14px", color: "black" }}>2022</span></p>
+                                <p className='imgoingtothegym'> <span style={{ fontWeight: "bold", fontSize: "14px", color: "black" }}>{orders.length} {orders.length > 1 ? 'orders' : 'order'}</span> placed</p>
 
                             </> :
                             <h1 className='somesssssss'>You don't have any orders right now, Click <NavLink exact to={'/allproducts/0'}><span className='hereeee'>here</span></NavLink> to see the offers.</h1>

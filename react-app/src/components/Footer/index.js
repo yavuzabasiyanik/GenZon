@@ -19,6 +19,9 @@ const Footer = ({ something, something2 }) => {
                         <p>Contact Me</p>
                         <h6>Yavuz Abasiyanik</h6>
                         <h6>(312) 607-5021</h6>
+                        {/* <h6>Ahmed Abasiyanik</h6>
+                        <h6>ahmedabasiyanik03@gmail.com</h6>
+                        <h6>(312) 783-7052</h6> */}
                     </div>
 
 
@@ -56,6 +59,7 @@ const Footer = ({ something, something2 }) => {
 
                         <div className="someeeeeee">
                             <a rel="noreferrer" href="https://www.linkedin.com/in/yavuzabasiyanik/" target="_blank"><i className="githublinked fa-brands fa-linkedin"></i></a>
+                            {/* <a rel="noreferrer" href="https://www.linkedin.com/in/ahmed-abasiyanik/" target="_blank"><i className="githublinked fa-brands fa-linkedin"></i></a> */}
                             <a rel="noreferrer" href="https://github.com/yavuzabasiyanik" target="_blank"><i className="githublinked fa-brands fa-github"></i></a>
                         </div>
 
@@ -69,6 +73,7 @@ const Footer = ({ something, something2 }) => {
             </div>
             <div className="bilgiler">
                 GenZon is an Amazon clone built by Yavuz Abasiyanik.
+                {/* GenZon is an Amazon clone built by Ahmed Abasiyanik. */}
             </div>
         </footer>
 

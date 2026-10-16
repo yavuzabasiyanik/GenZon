@@ -39,7 +39,10 @@ const SingleProduct = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-
+        if (!user) {
+            history.push('/login')
+            return
+        }
 
         if ((shoppingcart?.user_id === user?.id) && (shoppingcart?.quantity + (+quantity)) > product?.quantity) {
             setErrors(['You cannot buy more than provided quantity!!! (You already have this product in your shopping cart...) '])
@@ -171,6 +174,7 @@ const SingleProduct = () => {
 
         if (!user) {
             history.push('/login')
+            return
         }
 
         setReviewDropdown(ele => {
@@ -254,23 +258,8 @@ const SingleProduct = () => {
 
     });
 
-    const days = [
-        'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'
-    ]
-    const months = [
-        "January",
-        "Febraury",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    ]
+    const deliveryDate = (daysFromNow) => new Date(Date.now() + daysFromNow * 24 * 60 * 60 * 1000)
+        .toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })
 
     const geri = () => {
 
@@ -282,6 +271,7 @@ const SingleProduct = () => {
 
         if(!user){
             history.push('/login');
+            return
         }
 
         setBuyNowModal(true)
@@ -305,7 +295,7 @@ const SingleProduct = () => {
                                 <i style={averageRating >= 4 ? { color: "#fd4" } : { color: "#444" }} className='fas fa-star'></i>
                                 <i style={averageRating === 5 ? { color: "#fd4" } : { color: "#444" }} className='fas fa-star'></i>
                             </div>
-                            <h2 style={{ wordBreak: "break-all" }} >{reviews.length} {reviews.length > 1 ? "ratings" : "rating"}</h2>
+                            <h2 style={{ wordBreak: "break-all" }} >{reviews.length} {reviews.length === 1 ? "rating" : "ratings"}</h2>
                         </div>
                         <div className='pricethingyhehe'>
                             <p style={{ fontSize: "14px" }} ><span style={{ fontSize: "14px", fontFamily: "Merienda" }}>Price:</span> <span style={{
@@ -340,12 +330,12 @@ const SingleProduct = () => {
                         <div className='productcheckoutdelivery'>
                             <div className='freeeta'>
                                 <span style={{ color: "#007185" }}>FREE delivery:</span>
-                                <b>{days[new Date(Number(new Date()) + (60 * 160 * 24 * 1000)).getDay()]}, {months[new Date(Number(new Date()) + (160 * 160 * 24 * 1000)).getMonth()]} {new Date(Number(new Date()) + (60 * 160 * 24 * 1000)).getDate()}</b>
+                                <b>{deliveryDate(7)}</b>
                             </div>
                             <div className='fastesteta'>
                                 <div>
                                     <span style={{ color: "#007185" }}>Fastest delivery:</span>
-                                    <b> {days[new Date(Number(new Date()) + (60 * 60 * 24 * 1000)).getDay()]}, {months[new Date(Number(new Date()) + (60 * 60 * 24 * 1000)).getMonth()]} {new Date(Number(new Date()) + (60 * 60 * 24 * 1000)).getDate()} </b>
+                                    <b> {deliveryDate(1)} </b>
 
                                 </div>
                                 <div style={{ color: "#565959" }}>Order within 24 hours</div>
@@ -379,7 +369,7 @@ const SingleProduct = () => {
 
                         <div style={{ fontSize: "14px", lineHeight: "20px", marginTop: "10px" }}>
                             Return policy:
-                            <span style={{ color: " #007185", wordBreak: "break-word" }}> Returnable until 2023</span>
+                            <span style={{ color: " #007185", wordBreak: "break-word" }}> Returnable within 30 days</span>
                         </div>
 
 
@@ -524,13 +514,13 @@ const SingleProduct = () => {
 
 
                             <div style={{ display: "flex", justifyContent: "space-between", width: "100%", padding: "0 8px" }}>
-                                <p>Item (1):</p>
-                                <p>${product?.price}.00</p>
+                                <p>Items ({quantity}):</p>
+                                <p>${product?.price * quantity}.00</p>
                             </div>
 
                             <div style={{ display: "flex", justifyContent: "space-between", width: "100%", padding: "0 8px" }}>
                                 <p>Total before tax:</p>
-                                <p>${product?.price}.00</p>
+                                <p>${product?.price * quantity}.00</p>
                             </div>
 
                             <div style={{ display: "flex", justifyContent: "space-between", width: "100%", padding: "0 8px" }}>
@@ -540,7 +530,7 @@ const SingleProduct = () => {
 
                             <div style={{ display: "flex", borderTop: "1px solid #D5D9D9", justifyContent: "space-between", width: "100%", padding: "0 8px", paddingTop: "12px" }}>
                                 <h1 style={{ color: "#B12704", fontSize: "17px" }}>Order total:</h1>
-                                <h1 style={{ color: "#B12704", fontSize: "17px" }}>${product?.price}.00</h1>
+                                <h1 style={{ color: "#B12704", fontSize: "17px" }}>${product?.price * quantity}.00</h1>
                             </div>
                         </div>
 

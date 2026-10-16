@@ -2,9 +2,13 @@ import './Home.css';
 import { NavLink } from 'react-router-dom';
 import Footer from '../Footer';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 const Home = () => {
 
 
+    const products = useSelector(state => Object.values(state.products));
+    const echoDotId = products.find(p => p.name === 'Echo Dot Smart speaker with clock and Alexa')?.id;
+    const giftCardId = products.find(p => p.name === 'League of Legends Gift Card')?.id;
     const [imgInde, setImgIndex] = useState(1);
     const [some, setSome] = useState(0);
 
@@ -105,12 +109,12 @@ const Home = () => {
                     <div className='categories-home-page'>
 
                         <NavLink style={{ cursor: "auto" }} exact to={'/allproducts/1'}><p className="homepageptags" style={{ fontSize: "21px", fontWeight: "bold" }}>Echo Dot</p></NavLink>
-                        <NavLink exact to={'/productpage/21'}><img id='alexa' alt='something' className='' src='https://m.media-amazon.com/images/I/51MzOVciT3L._AC_UY218_.jpg'></img></NavLink>
+                        <NavLink exact to={`/productpage/${echoDotId}`}><img id='alexa' alt='something' className='' src='https://m.media-amazon.com/images/I/51MzOVciT3L._AC_UY218_.jpg'></img></NavLink>
                         <div className='genzonrecommended'>
                             GenZon Recommended
                         </div>
-                        <p style={{ fontFamily: "Merienda", fontSize: "18px", margin: "7px 0 0", display: "flex", cursor: "auto" }} ><span style={{ fontSize: "12px", fontFamily: "Merienda" }}>$</span>59.99</p>
-                        <NavLink exact to={'/productpage/21'}><p style={{ marginTop: "7px" }}>Echo Dot Smart speaker with clock and Alexa</p></NavLink>
+                        <p style={{ fontFamily: "Merienda", fontSize: "18px", margin: "7px 0 0", display: "flex", cursor: "auto" }} ><span style={{ fontSize: "12px", fontFamily: "Merienda" }}>$</span>60.00</p>
+                        <NavLink exact to={`/productpage/${echoDotId}`}><p style={{ marginTop: "7px" }}>Echo Dot Smart speaker with clock and Alexa</p></NavLink>
 
                         <NavLink style={{ cursor: "auto" }} exact to={'/allproducts/1'}><p style={{ marginTop: "20px" }} className='mavicik'>Shop from this category</p></NavLink>
 
@@ -119,14 +123,14 @@ const Home = () => {
                     </div>
 
                     <div className='categories-home-page'>
-                        <NavLink style={{ cursor: "auto" }} exact to={'/productpage/22'}><p className="homepageptags" style={{ fontSize: "21px", fontWeight: "bold" }}>Best Deal...</p></NavLink>
+                        <NavLink style={{ cursor: "auto" }} exact to={`/productpage/${giftCardId}`}><p className="homepageptags" style={{ fontSize: "21px", fontWeight: "bold" }}>Best Deal...</p></NavLink>
 
-                        <NavLink exact to={'/productpage/22'}><img id='alexa' alt='something' className='' src='https://m.media-amazon.com/images/I/71iUrQk82KL._SY500_.jpg'></img></NavLink>
+                        <NavLink exact to={`/productpage/${giftCardId}`}><img id='alexa' alt='something' className='' src='https://m.media-amazon.com/images/I/71iUrQk82KL._SY500_.jpg'></img></NavLink>
                         <div style={{ width: "100px" }} className='genzonrecommended'>
                             Deal of the Day
                         </div>
                         <p style={{ fontFamily: "Merienda", fontSize: "18px", margin: "7px 0 0", display: "flex", cursor: "auto" }} ><span style={{ fontSize: "12px", fontFamily: "Merienda" }}>$</span>100.00</p>
-                        <NavLink exact to={'/productpage/22'}><p style={{ marginTop: "7px" }}>League of Legends Gift Card</p></NavLink>
+                        <NavLink exact to={`/productpage/${giftCardId}`}><p style={{ marginTop: "7px" }}>League of Legends Gift Card</p></NavLink>
 
                         <NavLink style={{ cursor: "auto" }} exact to={'/allproducts/5'}><p style={{ marginTop: "20px" }} className='mavicik'>Buy more League products</p></NavLink>
 

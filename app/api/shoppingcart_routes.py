@@ -35,11 +35,21 @@ def createShoppingCart():
 
     form = ShoppingCartForm()
 
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
 
+        product = Product.query.get(form.data['product_id'])
+        if not product:
+            return {'errors': ['product_id : Product not found']}, 404
+        if product.user_id == current_user.id:
+            return {'errors': ['product_id : You cannot add your own product to your cart']}, 400
+
         shoppingcartProductDeneme = ShoppingCart.query.filter(ShoppingCart.product_id == form.data['product_id'], ShoppingCart.user_id == current_user.id ).first()
+
+        inCart = shoppingcartProductDeneme.quantity if shoppingcartProductDeneme else 0
+        if form.data['quantity'] < 1 or inCart + form.data['quantity'] > product.quantity:
+            return {'errors': ['quantity : You cannot buy more than the available quantity']}, 400
 
         if(shoppingcartProductDeneme):
             shoppingcartProductDeneme.quantity = shoppingcartProductDeneme.quantity+form.data['quantity']
@@ -102,9 +112,12 @@ def updateShoppingCart(shoppingcart_id):
 
     form = ShoppingCartForm()
 
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
+
+        if not 1 <= form.data['quantity'] <= shoppingcartProduct.product.quantity:
+            return {'errors': ['quantity : You cannot buy more than the available quantity']}, 400
 
         shoppingcartProduct.quantity = form.data['quantity']
 

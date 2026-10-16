@@ -1,7 +1,7 @@
 from flask.cli import AppGroup
 from app.models import User
 from .users import seed_users, undo_users
-from .products import seed_products, undo_products
+from .products import seed_products, seed_featured_products, undo_products
 # Creates a seed group to hold our commands
 # So we can type `flask seed --help`
 seed_commands = AppGroup('seed')
@@ -12,6 +12,7 @@ seed_commands = AppGroup('seed')
 def seed():
     seed_users()
     seed_products()
+    seed_featured_products()
     # Add other seed functions here
 
 
@@ -22,6 +23,7 @@ def seed_if_empty():
     if User.query.first() is None:
         seed_users()
         seed_products()
+    seed_featured_products()
 
 
 # Creates the `flask seed undo` command

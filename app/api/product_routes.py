@@ -169,7 +169,7 @@ def updateProduct(product_id):
 
     form = ProductForm()
 
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
 

@@ -53,6 +53,11 @@ const AllProductsPage = () => {
 
     let mappedProducts;
 
+    const averageRating = (product) => {
+        const productReviews = reviews.filter(el => el?.product_id === product?.id);
+        return productReviews.length ? productReviews.reduce((a, b) => a + b.rating, 0) / productReviews.length : 0;
+    }
+
 
     const handleClickinformativecircle = () => {
 
@@ -202,7 +207,7 @@ const AllProductsPage = () => {
         ))
     } else if (sortby === 'ratingavg') {
 
-        mappedProducts = allProducts.sort((a, b) => b.rating - a.rating).sort((a, b) => b.reviews.length - a.reviews.length).map(ele => (
+        mappedProducts = allProducts.sort((a, b) => averageRating(b) - averageRating(a) || b.reviews.length - a.reviews.length).map(ele => (
 
             <div key={ele?.id} className="selam23">
                 <div style={{ width: "100%", height: "271px", backgroundColor: "white", display: "flex", justifyContent: "center", borderTopLeftRadius: "4px", borderTopRightRadius: "4px" }}>
